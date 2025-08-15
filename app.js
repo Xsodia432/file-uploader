@@ -8,6 +8,8 @@ require("dotenv/config");
 const path = require("node:path");
 const assetsPath = path.join(__dirname, "public");
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 const { format, formatDistanceToNow } = require("date-fns");
 
 app.set("views", path.join(__dirname, "views"));
@@ -28,11 +30,15 @@ app.use(
     },
   })
 );
-// app.use(passport.session());
 
+app.use(passport.session());
 app.use(express.static(assetsPath));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use((req, res, next) => {
+  res.locals.helpers = {
+    user: req.user,
+  };
+  next();
+});
 app.use("/", routes);
 app.use("/{*splat}", routes);
 app.use((err, req, res, next) => {

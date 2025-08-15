@@ -1,1 +1,4 @@
-<%-include("header")%> <%-include("logInPage")%> <%-include("footer")%>
+<%-include("header")%> <%if(!locals.helpers.user) {%><%-include("logInPage")%>
+<%} else{%>
+<a href="/logout">Logout</a>
+<%}%><%-include("footer")%>

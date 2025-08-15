@@ -93,7 +93,7 @@ a {
   background-color: white;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 2px 1px 2px 1px gray;
   gap: 10px;
@@ -109,6 +109,7 @@ a {
 }
 .default {
   padding: 10px 5px;
+  border-radius: 5px;
 }
 .error-container {
   color: red;

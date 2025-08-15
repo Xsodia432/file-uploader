@@ -1,5 +1,7 @@
 const { Router } = require("express");
 const userValidation = require("../middleware/userValidation");
+const userController = require("../controller/userController");
+const passport = require("passport");
 const router = new Router();
 
 router.get("/", (req, res) => {
@@ -8,8 +10,21 @@ router.get("/", (req, res) => {
 router.get("/signup", (req, res) => {
   res.render("signUpPage");
 });
-router.post("/signup", userValidation.validateSignupForm, (req, res) => {
-  console.log(req.body);
+router.post(
+  "/signup",
+  userValidation.validateSignupForm,
+  userController.createAccount,
+  passport.authenticate("local"),
+  (req, res) => {
+    res.send({ msg: "Success" });
+  }
+);
+router.get("/logout", (req, res) => {
+  console.log("kek");
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect("/");
+  });
 });
-
+router.get("/delete", userController.deleteUsers);
 module.exports = router;

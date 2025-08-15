@@ -29,6 +29,7 @@ exports.validateSignupForm = [
       res.send({ errors: errors.array() });
       return;
     }
+
     next();
   },
 ];
