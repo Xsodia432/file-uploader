@@ -23,11 +23,12 @@ exports.validateSignupForm = [
         throw new Error("Password doesn't match.");
       } else return true;
     }),
-  (req, res) => {
+  (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.send({ errors: errors.array() });
       return;
     }
+    next();
   },
 ];

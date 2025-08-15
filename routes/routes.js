@@ -8,6 +8,8 @@ router.get("/", (req, res) => {
 router.get("/signup", (req, res) => {
   res.render("signUpPage");
 });
-router.post("/signup", userValidation.validateSignupForm);
+router.post("/signup", userValidation.validateSignupForm, (req, res) => {
+  console.log(req.body);
+});
 
 module.exports = router;

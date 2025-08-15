@@ -45,3 +45,9 @@ model Folders{
   user_id String
   file Files[]
 }
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
+}

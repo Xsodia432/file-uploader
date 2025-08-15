@@ -43,6 +43,8 @@ a {
 .login-desc {
   padding: 10px;
   text-align: justify;
+
+  font-size: 1.2rem;
 }
 .login-input {
   background-color: white;
