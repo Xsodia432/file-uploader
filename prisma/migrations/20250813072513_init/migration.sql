@@ -16,18 +16,22 @@ CREATE TABLE "public"."Files" (
     "file_size" BIGINT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "shareable" BOOLEAN NOT NULL,
+    "type" TEXT NOT NULL DEFAULT 'File',
     "user_id" TEXT NOT NULL,
+    "folder_id" TEXT NOT NULL,
 
     CONSTRAINT "Files_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."User_file_shares" (
+CREATE TABLE "public"."Folders" (
     "id" TEXT NOT NULL,
-    "file_id" TEXT NOT NULL,
+    "type" TEXT NOT NULL DEFAULT 'Folder',
+    "modified_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "folder_name" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
 
-    CONSTRAINT "User_file_shares_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Folders_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -37,7 +41,7 @@ CREATE UNIQUE INDEX "Users_user_name_key" ON "public"."Users"("user_name");
 ALTER TABLE "public"."Files" ADD CONSTRAINT "Files_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."User_file_shares" ADD CONSTRAINT "User_file_shares_file_id_fkey" FOREIGN KEY ("file_id") REFERENCES "public"."Files"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."Files" ADD CONSTRAINT "Files_folder_id_fkey" FOREIGN KEY ("folder_id") REFERENCES "public"."Folders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."User_file_shares" ADD CONSTRAINT "User_file_shares_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."Folders" ADD CONSTRAINT "Folders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

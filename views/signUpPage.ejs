@@ -1,0 +1,47 @@
+<%-include("header")%>
+
+<div class="signup-container">
+  <div class="signup-content">
+    <h1 class="default-color">Vault | Tage</h1>
+    <form onsubmit="return signUpSubmit(event)">
+      <h2>Create An Account</h2>
+      <p>Fill out the fields.</p>
+      <hr />
+      <div class="error-container" id="error-container"></div>
+      <div>
+        <label for="user_name">User Name</label>
+        <input
+          type="text"
+          class="default-field default"
+          name="user_name"
+          id="user_name"
+        />
+      </div>
+
+      <div>
+        <label for="password">Password</label>
+        <input
+          type="text"
+          class="default-field default"
+          name="password"
+          id="password"
+        />
+      </div>
+
+      <div>
+        <label for="confirm_password">Confim Password</label>
+        <input
+          type="text"
+          class="default-field default"
+          name="confirm_password"
+          id="confirm_password"
+        />
+      </div>
+
+      <button class="default-btn">Create</button>
+
+      <a href="/" class="default-color">Sign In Instead</a>
+    </form>
+  </div>
+</div>
+<%-include("footer")%>

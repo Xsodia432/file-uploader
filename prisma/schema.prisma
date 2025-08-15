@@ -20,8 +20,8 @@ model Users{
   first_name String
   last_name String?
   password String
-  files Files[]
-  file_shares User_file_shares[]
+  file Files[]
+  folder Folders[]
 }
 model Files{
   id String @id @default(uuid())
@@ -29,14 +29,19 @@ model Files{
   file_size BigInt
   createdAt DateTime @default(now())
   shareable Boolean
+  type String @default("File")
   user Users @relation(fields: [user_id],references: [id])
   user_id String
-  file_share_id User_file_shares[]
+  folder Folders? @relation(fields: [folder_id],references: [id])
+  folder_id String?
 }
-model User_file_shares{
+
+model Folders{
   id String @id @default(uuid())
-  file Files @relation(fields:[file_id],references: [id],onDelete: Cascade)
-  file_id String 
+  type String @default("Folder")
+  modified_at DateTime @default(now())
+  folder_name String
   user Users @relation(fields: [user_id],references: [id])
   user_id String
+  file Files[]
 }
