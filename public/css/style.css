@@ -102,6 +102,8 @@ a {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  justify-content: start;
+  align-items: start;
 }
 
 .xl {
@@ -109,9 +111,13 @@ a {
 }
 .default {
   padding: 10px 5px;
+  width: 100%;
   border-radius: 5px;
 }
 .error-container {
   color: red;
   text-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }

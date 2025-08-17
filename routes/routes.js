@@ -19,8 +19,18 @@ router.post(
     res.send({ msg: "Success" });
   }
 );
+
+router.post("/login", userValidation.validateLoginForm, (req, res) => {
+  passport.authenticate("local", (error, user, info) => {
+    if (!user) return res.send({ errors: [info] });
+    req.login(user, (err) => {
+      if (err) return res.send({ errors: [err] });
+      return res.send({ msg: "Success" });
+    });
+  })(req, res);
+});
+
 router.get("/logout", (req, res) => {
-  console.log("kek");
   req.logout((err) => {
     if (err) return next(err);
     res.redirect("/");

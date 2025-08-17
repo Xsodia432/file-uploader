@@ -1,9 +1,9 @@
-async function signUpSubmit(ev) {
+async function formSubmit(ev, url) {
   ev.preventDefault();
   const formData = new FormData(ev.target);
   const formEntries = Object.fromEntries(formData.entries());
   try {
-    const response = await fetch("/signup", {
+    const response = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
       },

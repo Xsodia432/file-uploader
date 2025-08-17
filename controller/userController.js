@@ -9,9 +9,10 @@ passport.use(
     async (user_name, password, done) => {
       try {
         const user = await prismaService.findUserByUserName(user_name);
-        if (!user) return done(null, false, { message: "Username not found" });
+
+        if (!user) return done(null, false, { msg: "Username not found" });
         if (user.password !== password)
-          return done(null, false, { message: "Password incorrect" });
+          return done(null, false, { msg: "Password incorrect" });
         done(null, user);
       } catch (err) {
         done(err);

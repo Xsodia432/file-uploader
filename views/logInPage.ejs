@@ -16,7 +16,9 @@
       </div>
     </div>
     <div class="login-input">
-      <form>
+      <div class="error-container" id="error-container"></div>
+      <br>
+      <form onsubmit="return formSubmit(event,'/login')">
         <div>
           <label for="user_name">User Name</label>
           <input
