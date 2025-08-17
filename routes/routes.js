@@ -14,21 +14,14 @@ router.post(
   "/signup",
   userValidation.validateSignupForm,
   userController.createAccount,
-  passport.authenticate("local"),
-  (req, res) => {
-    res.send({ msg: "Success" });
-  }
+  userController.authenticateUser
 );
 
-router.post("/login", userValidation.validateLoginForm, (req, res) => {
-  passport.authenticate("local", (error, user, info) => {
-    if (!user) return res.send({ errors: [info] });
-    req.login(user, (err) => {
-      if (err) return res.send({ errors: [err] });
-      return res.send({ msg: "Success" });
-    });
-  })(req, res);
-});
+router.post(
+  "/login",
+  userValidation.validateLoginForm,
+  userController.authenticateUser
+);
 
 router.get("/logout", (req, res) => {
   req.logout((err) => {

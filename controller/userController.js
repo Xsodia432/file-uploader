@@ -39,3 +39,12 @@ exports.createAccount = async (req, res, next) => {
 exports.deleteUsers = async (req, res) => {
   await prismaService.deleteUsers();
 };
+exports.authenticateUser = (req, res) => {
+  passport.authenticate("local", (error, user, info) => {
+    if (!user) return res.send({ errors: [info] });
+    req.login(user, (err) => {
+      if (err) return res.send({ errors: [err] });
+      return res.send({ msg: "Success" });
+    });
+  })(req, res);
+};
