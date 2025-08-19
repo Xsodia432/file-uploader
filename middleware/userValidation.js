@@ -1,5 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const prismaService = require("../db/prismaServices");
+const { max } = require("date-fns");
 
 const fields = [
   body("user_name").notEmpty().withMessage("User name should not be empty"),
@@ -43,6 +44,18 @@ exports.validateLoginForm = [
       res.send({ errors: errors.array() });
       return;
     }
+    next();
+  },
+];
+exports.validateFolderForm = [
+  body("folder_name")
+    .notEmpty()
+    .withMessage("Folder name should not be empty")
+    .isLength({ min: 1, max: 255 })
+    .withMessage("Folder name should be between 1 and 255 characters "),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.send({ errors: errors.array() });
     next();
   },
 ];

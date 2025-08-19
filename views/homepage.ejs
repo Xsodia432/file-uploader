@@ -1,7 +1,54 @@
 <div class="main-container">
-  <div class="side-bar"><h1>Side Bar</h1></div>
+  <div class="modal hide">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>Create Folder</h2>
+        <h1 id="modal-close">X</h1>
+      </div>
+      <div class="modal-body">
+        <div id="error-container" class="error-container"></div>
+        <form
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+          "
+          id="form-submit-folder"
+        >
+          <div style="display: flex; flex-direction: column; gap: 5px">
+            <label for="folder_name">Folder Name</label>
+            <input
+              type="text"
+              name="folder_name"
+              id="folder_name"
+              class="default-field default"
+            />
+          </div>
+
+          <button type="submit" class="default-btn default">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="side-bar">
+    <a href="/"><h1>Vault | Tage</h1></a>
+
+    <div class="upload-container">
+      <button class="default-btn default">Upload File</button>
+      <button class="default-btn default" id="modal-open">Create Folder</button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px">
+      <a href="/" class="default-btn default">Home </a>
+      <a href="/shared_files" class="default-btn default">Shared </a>
+    </div>
+  </div>
   <main>
     <%-include("nav")%>
-    <div class="main-content"><h1>main Content</h1></div>
+    <div class="main-content">
+      <h1>main Content</h1>
+      <a href="/delete">Delete Users</a>
+      <form method="POST" action="/logout"><button>Logout</button></form>
+    </div>
   </main>
 </div>
