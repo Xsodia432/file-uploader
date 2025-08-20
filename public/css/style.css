@@ -172,7 +172,6 @@ nav {
   position: absolute;
   z-index: 999;
   display: flex;
-
   flex-direction: column;
   align-items: center;
 }
@@ -187,11 +186,15 @@ nav {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid rgb(230, 227, 227);
-
+  margin-bottom: 5px;
   padding-bottom: 5px;
 }
 .hide {
   display: none;
 }
 .modal-container {
+}
+.default-btn:hover {
+  background-color: rgb(190, 152, 190);
+  transition: background-color ease-in-out 0.1s;
 }

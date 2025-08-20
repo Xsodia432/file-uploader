@@ -23,7 +23,8 @@ model Users{
 }
 model Files{
   id String @id @default(uuid())
-  file_name String
+  name String
+  file_name String 
   file_size BigInt
   createdAt DateTime @default(now())
   shareable Boolean
@@ -38,7 +39,7 @@ model Folders{
   id String @id @default(uuid())
   type String @default("Folder")
   modified_at DateTime @default(now())
-  folder_name String
+  name String
   user Users @relation(fields: [user_id],references: [id])
   user_id String
   file Files[]

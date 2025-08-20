@@ -4,9 +4,7 @@ const userController = require("../controller/userController");
 const passport = require("passport");
 const router = new Router();
 
-router.get("/", (req, res) => {
-  res.render("index");
-});
+router.get("/", userController.index);
 router.get("/signup", (req, res) => {
   res.render("signUpPage");
 });
@@ -34,5 +32,6 @@ router.post("/logout", (req, res) => {
     res.redirect("/");
   });
 });
+router.post("/upload/files", userController.upload, userController.uploadFile);
 router.get("/delete", userController.deleteUsers);
 module.exports = router;

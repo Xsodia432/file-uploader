@@ -1,7 +1,10 @@
 const passport = require("passport");
 const prismaService = require("../db/prismaServices");
 const LocalStrategy = require("passport-local").Strategy;
-// const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
 
 passport.use(
   new LocalStrategy(
@@ -31,7 +34,13 @@ passport.deserializeUser(async (id, done) => {
     done(err);
   }
 });
+exports.index = async (req, res) => {
+  const files = req.user
+    ? await prismaService.findFilesByUserId(req.user.id)
+    : null;
 
+  res.render("index", { files: files });
+};
 exports.createAccount = async (req, res, next) => {
   await prismaService.createUser(req.body.user_name, req.body.password);
   next();
@@ -47,4 +56,44 @@ exports.authenticateUser = (req, res) => {
       return res.send({ msg: "Success" });
     });
   })(req, res);
+};
+
+exports.createFolder = async (req, res) => {
+  const folderName = await prismaService.createFolder(
+    req.user.id,
+    req.body["folder_name"]
+  );
+  const dir = path.join(
+    __dirname,
+    "..",
+    "userStorage",
+    req.user.id,
+    folderName.id
+  );
+  fs.mkdir(dir, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+  res.send({ msg: "Success" });
+};
+
+const storage = multer.diskStorage({
+  destination: (req, res, cb) => {
+    cb(null, path.join(__dirname, "..", "userStorage", req.user.id));
+  },
+  filename: async (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+exports.upload = multer({ storage }).single("file");
+
+exports.uploadFile = async (req, res, next) => {
+  if (!req.file) res.send({ errors: [{ msg: "File should not be empty" }] });
+  await prismaService.createFile(
+    req.user.id,
+    req.file.filename,
+    req.file.originalname,
+    req.file.size
+  );
+  res.send({ msg: "Success" });
 };
