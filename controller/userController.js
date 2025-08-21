@@ -39,7 +39,7 @@ exports.index = async (req, res) => {
     ? await prismaService.findFilesByUserId(req.user.id)
     : null;
 
-  res.render("index", { files: files });
+  res.render("index", { files: files, title: "Vaul | Tage", folderId: null });
 };
 exports.createAccount = async (req, res, next) => {
   await prismaService.createUser(req.body.user_name, req.body.password);
@@ -88,12 +88,31 @@ const storage = multer.diskStorage({
 exports.upload = multer({ storage }).single("file");
 
 exports.uploadFile = async (req, res, next) => {
-  if (!req.file) res.send({ errors: [{ msg: "File should not be empty" }] });
+  if (!req.file) return res.routes("/");
   await prismaService.createFile(
     req.user.id,
     req.file.filename,
     req.file.originalname,
-    req.file.size
+    req.file.size,
+    req.params.folderId ? req.params.folderId : null
   );
-  res.send({ msg: "Success" });
+  const folder = await prismaService.findFolderById(req.params.folderId);
+  res.redirect(
+    req.params.folderId ? `/folder/${folder.id}/${folder.name}` : "/"
+  );
+};
+exports.getFolder = async (req, res) => {
+  const { id, name } = req.params;
+
+  const files = await prismaService.findFilesByFolderId(id);
+
+  res.render("folderPage", {
+    files: files,
+    title: name,
+    folderId: id,
+  });
+};
+exports.getFile = async (req, res) => {
+  const { id } = req.params;
+  const file = await prismaService.findFileById(id);
 };

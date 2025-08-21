@@ -1,0 +1,31 @@
+<%-include("header")%>
+<div class="main-container">
+  <%-include("modal")%> <%-include("sidebar")%>
+  <main>
+    <%-include("nav")%>
+    <div class="main-content">
+      <h2><%=title%></h2>
+      <table>
+        <thead class="table-head">
+          <th style="width: 60%">Name</th>
+          <th>Size</th>
+          <th></th>
+        </thead>
+
+        <%if(files && files.length !== 0) {%> <%files.forEach(function(val) {%>
+        <tr class="table-body">
+          <td style="padding: 5px">
+            <%if(val.type === "Folder"){%>
+            <a href="/folder/<%=val.id%>/<%=val.name%>"><%=val.name%></a>
+            <%}%> <%if(val.type === "File"){%> <%=val.name%><%}%>
+          </td>
+
+          <td><%=val.file_size ? val.file_size : "..."%></td>
+          <td><span>Options</span></td>
+        </tr>
+        <%})%> <%}%>
+      </table>
+    </div>
+  </main>
+</div>
+<%-include("footer")%>

@@ -1,26 +1,42 @@
 <div class="main-container">
-  <%-include("modal")%>
-  <div class="side-bar">
-    <a href="/"><h1>Vault | Tage</h1></a>
-
-    <div class="upload-container">
-      <button class="default-btn default" id="modal-open-upload">
-        Upload File
-      </button>
-      <button class="default-btn default" id="modal-open">Create Folder</button>
-    </div>
-    <div style="display: flex; flex-direction: column; gap: 5px">
-      <a href="/" class="default-btn default">Home </a>
-      <a href="/sharedfiles" class="default-btn default">Shared </a>
-    </div>
-  </div>
+  <%-include("modal")%> <%-include("sidebar")%>
   <main>
     <%-include("nav")%>
     <div class="main-content">
-      <h1>main Content</h1>
-      <%files.forEach(function(val) {%> <%=val.name%> <%})%>
-      <a href="/delete">Delete Users</a>
-      <form method="POST" action="/logout"><button>Logout</button></form>
+      <h2>Contents</h2>
+      <table>
+        <thead class="table-head">
+          <th style="width: 60%">Name</th>
+          <th>Size</th>
+          <th></th>
+        </thead>
+
+        <%if(files) {%> <%files.forEach(function(val) {%>
+        <tr class="table-body">
+          <td style="padding: 5px">
+            <%if(val.type === "Folder"){%>
+            <a href="/folder/<%=val.id%>/<%=val.name%>">
+              <span
+                class="mdi mdi-folder"
+                style="color: rgb(109, 109, 108); font-size: 1.5rem"
+              ></span>
+              <%=val.name%></a
+            >
+            <%}%> <%if(val.type === "File"){%>
+            <a href="/"
+              ><span
+                class="mdi mdi-file"
+                style="color: rgb(109, 109, 108); font-size: 1.5rem"
+              ></span>
+              <%=val.name%><%}%></a
+            >
+          </td>
+
+          <td><%=val.file_size ? val.file_size : "..."%></td>
+          <td><span>Options</span></td>
+        </tr>
+        <%})%> <%}%>
+      </table>
     </div>
   </main>
 </div>

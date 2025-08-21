@@ -6,7 +6,7 @@ const router = new Router();
 
 router.get("/", userController.index);
 router.get("/signup", (req, res) => {
-  res.render("signUpPage");
+  res.render("signUpPage", { title: "Signup" });
 });
 router.post(
   "/signup",
@@ -32,6 +32,12 @@ router.post("/logout", (req, res) => {
     res.redirect("/");
   });
 });
-router.post("/upload/files", userController.upload, userController.uploadFile);
+router.post(
+  "/upload/files{/:folderId}",
+  userController.upload,
+  userController.uploadFile
+);
 router.get("/delete", userController.deleteUsers);
+router.get("/folder/:id/:name", userController.getFolder);
+router.get("/file/i/:id", userController.getFile);
 module.exports = router;

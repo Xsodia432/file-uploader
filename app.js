@@ -15,6 +15,7 @@ const { format, formatDistanceToNow } = require("date-fns");
 app.set("views", path.join(__dirname, "views"));
 
 app.set("view engine", "ejs");
+
 app.use(
   session({
     store: new PrismaSessionStore(new PrismaClient(), {

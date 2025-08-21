@@ -70,6 +70,7 @@ a {
   cursor: pointer;
   color: white;
   font-weight: 900;
+  text-align: center;
 }
 .signup-container {
   display: flex;
@@ -133,7 +134,7 @@ main {
 }
 .main-content {
   border-radius: 10px;
-  padding: 20px;
+  padding: 10px 20px;
   background-color: white;
   margin-right: 10px;
   height: 92vh;
@@ -163,7 +164,7 @@ nav {
   padding-bottom: 10px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 2px;
 }
 .modal {
   background-color: rgba(190, 186, 186, 0.5);
@@ -197,4 +198,38 @@ nav {
 .default-btn:hover {
   background-color: rgb(190, 152, 190);
   transition: background-color ease-in-out 0.1s;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table-head {
+  margin-bottom: 10px;
+  font-weight: 900;
+}
+th {
+  text-align: left;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+
+td {
+  padding: 15px;
+}
+tr {
+  border-bottom: 1px solid rgb(199, 196, 196);
+}
+
+.table-body:hover {
+  background-color: rgb(236, 235, 235);
+}
+.file-input {
+  display: none; /* hide the native input */
+}
+td > a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }

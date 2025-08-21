@@ -11,12 +11,10 @@ if (document.getElementById("form-submit-folder")) {
     "json"
   );
 }
-if (document.getElementById("form-submit-file")) {
-  formSubmit(
-    "/upload/files",
-    document.getElementById("form-submit-file"),
-    "file"
-  );
+if (document.getElementById("file-input")) {
+  document.getElementById("file-input").addEventListener("change", (ev) => {
+    document.getElementById("form-upload-file").submit();
+  });
 }
 
 if (document.getElementById("modal-open")) {
@@ -29,18 +27,7 @@ if (document.getElementById("modal-open")) {
     modalHandler("modal-form");
   });
 }
-if (document.getElementById("modal-open-upload")) {
-  document
-    .getElementById("modal-close-upload")
-    .addEventListener("click", (ev) => {
-      modalHandler("modal-upload");
-    });
-  document
-    .getElementById("modal-open-upload")
-    .addEventListener("click", (ev) => {
-      modalHandler("modal-upload");
-    });
-}
+
 function modalHandler(id) {
   document.getElementById("error-container").textContent = "";
   document.getElementById(id).classList.toggle("hide");

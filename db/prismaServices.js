@@ -46,14 +46,24 @@ exports.findFilesByUserId = async (userId) => {
     },
     include: {
       folder: true,
-      file: true,
+      file: {
+        where: {
+          folder_id: null,
+        },
+      },
     },
   });
   const newFiles = [...files["folder"], ...files["file"]];
 
   return newFiles;
 };
-exports.createFile = async (userId, fileName, originalName, fileSize) => {
+exports.createFile = async (
+  userId,
+  fileName,
+  originalName,
+  fileSize,
+  folderId
+) => {
   await prisma.files.create({
     data: {
       user_id: userId,
@@ -61,6 +71,31 @@ exports.createFile = async (userId, fileName, originalName, fileSize) => {
       file_name: fileName,
       file_size: fileSize,
       shareable: false,
+      folder_id: folderId,
     },
   });
+};
+exports.findFilesByFolderId = async (folderId) => {
+  const files = await prisma.files.findMany({
+    where: {
+      folder_id: folderId,
+    },
+  });
+  return files;
+};
+exports.findFolderById = async (folderId) => {
+  const folder = await prisma.folders.findFirst({
+    where: {
+      id: folderId,
+    },
+  });
+  return folder;
+};
+exports.findFileById = async (fileId) => {
+  const file = await prisma.files.findFirst({
+    where: {
+      id: fileId,
+    },
+  });
+  return file;
 };
