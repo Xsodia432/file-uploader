@@ -29,9 +29,9 @@ model Files{
   createdAt DateTime @default(now())
   shareable Boolean
   type String @default("File")
-  user Users @relation(fields: [user_id],references: [id])
+  user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
   user_id String
-  folder Folders? @relation(fields: [folder_id],references: [id])
+  folder Folders? @relation(fields: [folder_id],references: [id],onDelete: Cascade)
   folder_id String?
 }
 
@@ -40,7 +40,7 @@ model Folders{
   type String @default("Folder")
   modified_at DateTime @default(now())
   name String
-  user Users @relation(fields: [user_id],references: [id])
+  user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
   user_id String
   file Files[]
 }

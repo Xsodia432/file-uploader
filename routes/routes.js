@@ -40,4 +40,11 @@ router.post(
 router.get("/delete", userController.deleteUsers);
 router.get("/folder/:id/:name", userController.getFolder);
 router.get("/file/i/:id", userController.getFile);
+router.post("/file/d/:id", userController.downloadFile);
+router.post(
+  "/update/file",
+  userValidation.validateFolderForm,
+  userController.updateFile
+);
+router.post("/file/delete/:id/:filetype", userController.deleteFile);
 module.exports = router;

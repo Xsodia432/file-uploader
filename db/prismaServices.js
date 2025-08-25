@@ -96,6 +96,51 @@ exports.findFileById = async (fileId) => {
     where: {
       id: fileId,
     },
+    include: {
+      user: {
+        select: {
+          user_name: true,
+          id: true,
+        },
+      },
+    },
   });
   return file;
+};
+
+exports.updateFile = async (fileName, fileId, fileType) => {
+  fileType === "File"
+    ? await prisma.files.update({
+        where: {
+          id: fileId,
+        },
+
+        data: {
+          name: fileName,
+        },
+      })
+    : await prisma.folders.update({
+        where: {
+          id: fileId,
+        },
+
+        data: {
+          name: fileName,
+        },
+      });
+  return;
+};
+exports.deleteFile = async (id, fileType) => {
+  fileType === "File"
+    ? await prisma.files.delete({
+        where: {
+          id: id,
+        },
+      })
+    : await prisma.folders.delete({
+        where: {
+          id: id,
+        },
+      });
+  return;
 };

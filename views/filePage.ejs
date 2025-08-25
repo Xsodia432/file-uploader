@@ -1,0 +1,30 @@
+<%-include("header")%>
+<link href="/css/filePage.css" rel="stylesheet"></link>
+<div class="file-container">
+    <h1 class="default-color" style="font-size: 2.5rem">Vault | Tage</h1>
+    <br>
+  <div class="file-content-container">
+    <div> 
+        <label for="fileName">File name</label>
+        <span id="fileName" style="color: gray;"><%=title%></span>
+    </div>
+    <div> 
+        <label for="fileSize">File size</label>
+        <span id="fileSize" style="color: gray;"><%=fileSize%></span>
+    </div>
+     <div> 
+        <label for="fileSize">Upload date</label>
+        <span id="fileSize" style="color: gray;"><%=uploadDate%></span>
+    </div>
+     <div> 
+        <label for="fileSize">Uploader</label>
+        <span id="fileSize" style="color: gray;"><%=uploader%></span>
+    </div>
+    <form method="POST" action="/file/d/<%=fileId%>">
+    <button class="default-btn" style="width: 100%;">Download</button>
+    </form>
+   
+</div>
+</div>
+
+<%-include("footer")%>

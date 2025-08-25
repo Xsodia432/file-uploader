@@ -10,7 +10,6 @@ const assetsPath = path.join(__dirname, "public");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-const { format, formatDistanceToNow } = require("date-fns");
 
 app.set("views", path.join(__dirname, "views"));
 

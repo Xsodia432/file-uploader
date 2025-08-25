@@ -5,7 +5,7 @@
       <h1 id="modal-close-form">X</h1>
     </div>
     <div class="modal-body">
-      <div id="error-containers" class="error-container"></div>
+      <div id="error-container" class="error-container"></div>
       <form
         style="
           display: flex;
@@ -19,7 +19,7 @@
           <label for="folder_name">Folder Name</label>
           <input
             type="text"
-            name="folder_name"
+            name="file_name"
             id="folder_name"
             class="default-field default"
           />
@@ -31,11 +31,11 @@
   </div>
 </div>
 
-<div class="modal hide" id="modal-upload">
+<div class="modal hide" id="modal-rename">
   <div class="modal-container">
     <div class="modal-header">
-      <h2>Upload File</h2>
-      <h1 id="modal-close-upload">X</h1>
+      <h2>Rename</h2>
+      <h1 id="modal-close-rename">X</h1>
     </div>
     <div class="modal-body">
       <div id="error-container" class="error-container"></div>
@@ -46,20 +46,20 @@
           gap: 10px;
           margin-top: 10px;
         "
-        id="form-submit-file"
+        id="form-update-rename"
       >
         <div style="display: flex; flex-direction: column; gap: 5px">
-          <label for="file_name">File</label>
+          <label for="file_name">File name</label>
           <input
-            type="file"
-            name="file"
+            type="text"
+            name="file_name"
             id="file_name"
             class="default-field default"
           />
         </div>
 
         <button type="submit" class="default-btn default">
-          Upload <span></span>
+          Update <span></span>
         </button>
       </form>
     </div>

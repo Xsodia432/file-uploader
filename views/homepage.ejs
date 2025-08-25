@@ -1,3 +1,4 @@
+<script src="/script/fileContent.js" defer></script>
 <div class="main-container">
   <%-include("modal")%> <%-include("sidebar")%>
   <main>
@@ -11,29 +12,40 @@
           <th></th>
         </thead>
 
-        <%if(files) {%> <%files.forEach(function(val) {%>
+        <%if(files) {%> <%files.forEach(function(val,index) {%>
         <tr class="table-body">
           <td style="padding: 5px">
-            <%if(val.type === "Folder"){%>
-            <a href="/folder/<%=val.id%>/<%=val.name%>">
-              <span
-                class="mdi mdi-folder"
-                style="color: rgb(109, 109, 108); font-size: 1.5rem"
-              ></span>
-              <%=val.name%></a
+            <a
+              href="<%=val.type === "Folder" ? `/folder/${val.id}/${val.name}` : `/file/i/${val.id}`%>"
+              data-file-id="<%=val.id%>"
+              data-file-type="<%=val.type%>"
+              class="file-name"
             >
-            <%}%> <%if(val.type === "File"){%>
-            <a href="/"
-              ><span
-                class="mdi mdi-file"
+              <span
+                class="mdi <%=val.type === "Folder" ? 'mdi-folder' : 'mdi-file'%>"
                 style="color: rgb(109, 109, 108); font-size: 1.5rem"
-              ></span>
-              <%=val.name%><%}%></a
+              ></span
+              ><%=val.name%></a
             >
           </td>
 
           <td><%=val.file_size ? val.file_size : "..."%></td>
-          <td><span>Options</span></td>
+          <td class="table-options" id="table-options">
+            <span class="options">Options</span>
+            <div class="drop-down-options">
+              <span class="mdi mdi-rename rename"> Rename</span>
+              <form method="POST" action="/file/delete/<%=val.id%>/<%=val.type%>" > <button type="submit" > <span class="mdi mdi-delete">
+              </span> Delete</button></form>
+             
+              <hr />
+              <span class="mdi mdi-share share-option" style="width: 100%;"> Share</span>
+                <div class="share-container" >
+                  <span class="share-folder"><span class="mdi mdi-account-plus"></span> With user</span>
+                  <span class="copy-file-link"><span><span class="mdi mdi-link"></span> Copy link</span>
+                </div>
+              <span class="mdi mdi-download"> Download</span>
+            </div>
+          </td>
         </tr>
         <%})%> <%}%>
       </table>

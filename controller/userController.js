@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
-
+const { format, formatDistanceToNow } = require("date-fns");
 passport.use(
   new LocalStrategy(
     { usernameField: "user_name", passwordField: "password" },
@@ -61,24 +61,15 @@ exports.authenticateUser = (req, res) => {
 exports.createFolder = async (req, res) => {
   const folderName = await prismaService.createFolder(
     req.user.id,
-    req.body["folder_name"]
+    req.body["file_name"]
   );
-  const dir = path.join(
-    __dirname,
-    "..",
-    "userStorage",
-    req.user.id,
-    folderName.id
-  );
-  fs.mkdir(dir, { recursive: true }, (err) => {
-    if (err) throw err;
-  });
+
   res.send({ msg: "Success" });
 };
 
 const storage = multer.diskStorage({
   destination: (req, res, cb) => {
-    cb(null, path.join(__dirname, "..", "userStorage", req.user.id));
+    cb(null, path.join(__dirname, "..", "userStorage"));
   },
   filename: async (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
@@ -115,4 +106,33 @@ exports.getFolder = async (req, res) => {
 exports.getFile = async (req, res) => {
   const { id } = req.params;
   const file = await prismaService.findFileById(id);
+
+  res.render("filePage", {
+    title: file.name,
+    fileSize: file.file_size,
+    uploadDate: format(file.createdAt, "MMMM dd, yyyy"),
+
+    uploader: file.user.user_name,
+    fileId: file.id,
+  });
+};
+exports.downloadFile = async (req, res) => {
+  const { id } = req.params;
+  const file = await prismaService.findFileById(id);
+
+  const filePath = path.join(__dirname, "..", "userStorage", file.file_name);
+  res.download(filePath, file.name, (err) => {
+    if (err) res.status(500).send("File not found");
+  });
+};
+exports.updateFile = async (req, res) => {
+  const { file_name, file_id, file_type } = req.body;
+  await prismaService.updateFile(file_name, file_id, file_type);
+  res.send({ msg: "Success" });
+};
+exports.deleteFile = async (req, res) => {
+  console.log(req.params.filetype);
+  await prismaService.deleteFile(req.params.id, req.params.filetype);
+
+  res.redirect("/");
 };

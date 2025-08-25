@@ -48,7 +48,7 @@ exports.validateLoginForm = [
   },
 ];
 exports.validateFolderForm = [
-  body("folder_name")
+  body("file_name")
     .notEmpty()
     .withMessage("Folder name should not be empty")
     .isLength({ min: 1, max: 255 })
