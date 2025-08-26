@@ -8,8 +8,11 @@ if (document.getElementById("form-submit-folder")) {
   formSubmit("/upload/folders", document.getElementById("form-submit-folder"));
 }
 
-if (document.getElementById("form-update-rename")) {
-  formSubmit("/update/file", document.getElementById("form-update-rename"));
+if (document.getElementById("form-rename")) {
+  formSubmit("/update/file", document.getElementById("form-rename"));
+}
+if (document.getElementById("form-share")) {
+  formSubmit("/file/share", document.getElementById("form-share"));
 }
 
 if (document.getElementById("file-input")) {
@@ -22,15 +25,15 @@ if (document.getElementById("modal-open")) {
   document
     .getElementById("modal-close-form")
     .addEventListener("click", (ev) => {
-      modalHandler("modal-form");
+      modalHandlerGeneral("modal-form");
     });
   document.getElementById("modal-open").addEventListener("click", (ev) => {
-    modalHandler("modal-form");
+    modalHandlerGeneral("modal-form");
   });
 }
 
-function modalHandler(id) {
-  document.getElementById("error-container").textContent = "";
+function modalHandlerGeneral(id) {
+  document.getElementById("error-folder-container").textContent = "";
   document.getElementById(id).classList.toggle("hide");
 }
 
@@ -38,13 +41,15 @@ function formSubmit(url, element) {
   element.addEventListener("submit", async (ev) => {
     ev.preventDefault();
     const formData = new FormData(ev.target);
-    const fileId = ev.target.elements["file_name"]
+    const fileId = ev.currentTarget.dataset.fileId
+      ? ev.currentTarget.dataset.fileId
+      : ev.target.elements["file_name"]
       ? ev.target.elements["file_name"].dataset.fileId
       : null;
-    const fileType = ev.target.elements["file_name"]
-      ? ev.target.elements["file_name"].dataset.fileType
+    const fileType = ev.currentTarget.dataset.fileType
+      ? ev.currentTarget.dataset.fileType
       : null;
-    console.log(fileType);
+
     const formEntries = {
       ...Object.fromEntries(formData.entries()),
       file_id: fileId,
@@ -60,8 +65,10 @@ function formSubmit(url, element) {
       });
 
       if (response.ok) {
-        const error_container = document.getElementById("error-container");
         const result = await response.json();
+        const error_container = result.errorContainer
+          ? document.getElementById(result.errorContainer)
+          : " ";
 
         if (result.errors) {
           error_container.textContent = "";

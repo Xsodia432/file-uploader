@@ -1,4 +1,6 @@
+<script src="/script/fileContent.js" defer></script>
 <%-include("header")%>
+
 <div class="main-container">
   <%-include("modal")%> <%-include("sidebar")%>
   <main>
@@ -15,13 +17,26 @@
         <%if(files && files.length !== 0) {%> <%files.forEach(function(val) {%>
         <tr class="table-body">
           <td style="padding: 5px">
-            <%if(val.type === "Folder"){%>
-            <a href="/folder/<%=val.id%>/<%=val.name%>"><%=val.name%></a>
-            <%}%> <%if(val.type === "File"){%> <%=val.name%><%}%>
+            <a href="/file/i/<%=val.id%>" target="_blank"><%=val.name%></a>
           </td>
 
           <td><%=val.file_size ? val.file_size : "..."%></td>
-          <td><span>Options</span></td>
+          <td class="table-options" id="table-options">
+            <span class="mdi mdi-dots-horizontal-circle-outline options"></span>
+            <div class="drop-down-options">
+              <span class="mdi mdi-rename rename"> Rename</span>
+              <form method="POST" action="/file/delete/<%=val.id%>/<%=val.type%>" > <button type="submit" > <span class="mdi mdi-delete">
+              </span> Delete</button></form>
+             
+              <hr />
+              <span class="mdi mdi-share share-option" style="width: 100%;"> Share</span>
+                <div class="share-container" >
+                  <span class="share-button" id="share-button"><span class="mdi mdi-account-plus"></span> With user</span>
+                  <span class="copy-file-link"><span><span class="mdi mdi-link"></span> Copy link</span>
+                </div>
+              <span class="mdi mdi-download"> Download</span>
+            </div>
+          </td>
         </tr>
         <%})%> <%}%>
       </table>

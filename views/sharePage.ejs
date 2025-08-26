@@ -1,0 +1,32 @@
+<%-include("header")%>
+<div class="main-container">
+  <%-include("modal")%> <%-include("sidebar")%>
+  <main>
+    <%-include("nav")%>
+    <div class="main-content">
+      <h2><%=title%></h2>
+      <table>
+        <thead class="table-head">
+          <th style="width: 60%">Name</th>
+          <th>Size</th>
+          <th></th>
+        </thead>
+
+        <%if(sharefiles && sharefiles.length !== 0) {%>
+        <%sharefiles.forEach(function(val) {%>
+        <tr class="table-body">
+          <td style="padding: 5px">
+            <%if(val["file"].type === "folder"){%>
+            <a href="/folder/<%=val["file"].id%>/<%=val["file"].name%>"><%=val["file"].name%></a>
+            <%}%> <%if(val["file"].type === "file"){%> <%=val["file"].name%><%}%>
+          </td>
+
+          <td><%=val["file"].file_size ? val["file"].file_size : "..."%></td>
+          <td class="table-options" id="table-options"><span>Options</span></td>
+        </tr>
+        <%})%> <%}%>
+      </table>
+    </div>
+  </main>
+</div>
+<%-include("footer")%>

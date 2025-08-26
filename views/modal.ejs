@@ -2,10 +2,10 @@
   <div class="modal-container">
     <div class="modal-header">
       <h2>Create Folder</h2>
-      <h1 id="modal-close-form">X</h1>
+      <h1 id="modal-close-form" class="close-modal">X</h1>
     </div>
     <div class="modal-body">
-      <div id="error-container" class="error-container"></div>
+      <div id="error-folder-container" class="error-container"></div>
       <form
         style="
           display: flex;
@@ -16,7 +16,7 @@
         id="form-submit-folder"
       >
         <div style="display: flex; flex-direction: column; gap: 5px">
-          <label for="folder_name">Folder Name</label>
+          <label for="folder_name">Folder name</label>
           <input
             type="text"
             name="file_name"
@@ -35,10 +35,10 @@
   <div class="modal-container">
     <div class="modal-header">
       <h2>Rename</h2>
-      <h1 id="modal-close-rename">X</h1>
+      <h2 id="modal-close-rename" class="close-modal">X</h2>
     </div>
     <div class="modal-body">
-      <div id="error-container" class="error-container"></div>
+      <div id="error-rename-container" class="error-container"></div>
       <form
         style="
           display: flex;
@@ -46,7 +46,7 @@
           gap: 10px;
           margin-top: 10px;
         "
-        id="form-update-rename"
+        id="form-rename"
       >
         <div style="display: flex; flex-direction: column; gap: 5px">
           <label for="file_name">File name</label>
@@ -60,6 +60,57 @@
 
         <button type="submit" class="default-btn default">
           Update <span></span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal hide" id="modal-share">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Share</h2>
+      <h1 id="modal-close-share" class="close-modal">X</h1>
+    </div>
+    <div class="modal-body">
+      <div id="error-share-container" class="error-container"></div>
+      <form
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 10px;
+        "
+        id="form-share"
+      >
+        <div style="display: flex; flex-direction: column; gap: 5px">
+          <label for="user_name"
+            >User name
+            <span style="color: gray"
+              >(share with other user, optional)</span
+            ></label
+          >
+          <input
+            type="text"
+            name="user_name"
+            id="user_name"
+            class="default-field default"
+          />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 5px">
+          <label for="duration"
+            >Duration <span style="color: gray">(in days)</span></label
+          >
+          <input
+            type="number"
+            name="duration"
+            id="duration"
+            class="default-field default"
+          />
+        </div>
+
+        <button type="submit" class="default-btn default">
+          <span>Share</span>
         </button>
       </form>
     </div>

@@ -19,34 +19,33 @@ model Users{
   user_name String @unique
   password String
   file Files[]
-  folder Folders[]
+  file_share FileShare[]
 }
 model Files{
   id String @id @default(uuid())
   name String
-  file_name String 
-  file_size BigInt
+  file_name String? 
+  file_size BigInt?
   createdAt DateTime @default(now())
-  shareable Boolean
-  type String @default("File")
-  user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
-  user_id String
-  folder Folders? @relation(fields: [folder_id],references: [id],onDelete: Cascade)
+  type String
   folder_id String?
-}
-
-model Folders{
-  id String @id @default(uuid())
-  type String @default("Folder")
-  modified_at DateTime @default(now())
-  name String
+  url String?
   user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
   user_id String
-  file Files[]
+  file_share FileShare[]
+  
 }
 model Session {
   id        String   @id
   sid       String   @unique
   data      String
   expiresAt   DateTime
+}
+model FileShare{
+  id String @id @default(uuid())
+  file Files @relation(fields: [file_id],references: [id],onDelete: Cascade)
+  file_id String
+  user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
+  user_id String
+  expires_at DateTime?
 }

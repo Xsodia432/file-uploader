@@ -22,6 +22,10 @@ exports.findUserByUserId = async (id) => {
     where: {
       id: id,
     },
+    select: {
+      id: true,
+      user_name: true,
+    },
   });
   return user;
 };
@@ -31,10 +35,11 @@ exports.deleteUsers = async () => {
   // await prisma.users.deleteMany();
 };
 exports.createFolder = async (userId, folderName) => {
-  const folder = await prisma.folders.create({
+  const folder = await prisma.files.create({
     data: {
       name: folderName,
       user_id: userId,
+      type: "folder",
     },
   });
   return folder;
@@ -44,18 +49,20 @@ exports.findFilesByUserId = async (userId) => {
     where: {
       id: userId,
     },
+
     include: {
-      folder: true,
       file: {
         where: {
           folder_id: null,
         },
+        orderBy: {
+          type: "desc",
+        },
       },
     },
   });
-  const newFiles = [...files["folder"], ...files["file"]];
 
-  return newFiles;
+  return files["file"];
 };
 exports.createFile = async (
   userId,
@@ -64,14 +71,15 @@ exports.createFile = async (
   fileSize,
   folderId
 ) => {
+  console.log(userId, fileName, originalName, fileSize, folderId);
   await prisma.files.create({
     data: {
       user_id: userId,
       name: originalName,
       file_name: fileName,
       file_size: fileSize,
-      shareable: false,
       folder_id: folderId,
+      type: "file",
     },
   });
 };
@@ -108,39 +116,64 @@ exports.findFileById = async (fileId) => {
   return file;
 };
 
-exports.updateFile = async (fileName, fileId, fileType) => {
-  fileType === "File"
-    ? await prisma.files.update({
-        where: {
-          id: fileId,
-        },
+exports.updateFile = async (fileName, fileId) => {
+  await prisma.files.update({
+    where: {
+      id: fileId,
+    },
+    data: {
+      name: fileName,
+    },
+  });
 
-        data: {
-          name: fileName,
-        },
-      })
-    : await prisma.folders.update({
-        where: {
-          id: fileId,
-        },
-
-        data: {
-          name: fileName,
-        },
-      });
   return;
 };
-exports.deleteFile = async (id, fileType) => {
-  fileType === "File"
-    ? await prisma.files.delete({
-        where: {
-          id: id,
-        },
-      })
-    : await prisma.folders.delete({
-        where: {
-          id: id,
-        },
-      });
+exports.deleteFile = async (id) => {
+  await prisma.files.delete({
+    where: {
+      id: id,
+    },
+  });
+
   return;
+};
+exports.fileShare = async (file_id, user_id, duration) => {
+  await prisma.fileShare.create({
+    data: {
+      file_id: file_id,
+      user_id: user_id,
+      expires_at: duration,
+    },
+  });
+};
+exports.getShareFiles = async (userId) => {
+  return prisma.fileShare.findMany({
+    where: {
+      user_id: userId,
+      expires_at: {
+        gt: new Date(),
+      },
+    },
+    include: {
+      file: {
+        include: {
+          user: {
+            select: {
+              user_name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+exports.findSharedUserByUserName = async (userName, fileId) => {
+  return await prisma.fileShare.count({
+    where: {
+      user: {
+        user_name: userName,
+      },
+      file_id: fileId,
+    },
+  });
 };

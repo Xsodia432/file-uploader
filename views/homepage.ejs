@@ -16,13 +16,13 @@
         <tr class="table-body">
           <td style="padding: 5px">
             <a
-              href="<%=val.type === "Folder" ? `/folder/${val.id}/${val.name}` : `/file/i/${val.id}`%>"
+              href="<%=val.type === "folder" ? `/folder/${val.id}/${val.name}` : `/file/i/${val.id}`%>"
               data-file-id="<%=val.id%>"
               data-file-type="<%=val.type%>"
               class="file-name"
             >
               <span
-                class="mdi <%=val.type === "Folder" ? 'mdi-folder' : 'mdi-file'%>"
+                class="mdi <%=val.type === "folder" ? 'mdi-folder' : 'mdi-file'%>"
                 style="color: rgb(109, 109, 108); font-size: 1.5rem"
               ></span
               ><%=val.name%></a
@@ -31,7 +31,7 @@
 
           <td><%=val.file_size ? val.file_size : "..."%></td>
           <td class="table-options" id="table-options">
-            <span class="options">Options</span>
+            <span class="mdi mdi-dots-horizontal-circle-outline options"></span>
             <div class="drop-down-options">
               <span class="mdi mdi-rename rename"> Rename</span>
               <form method="POST" action="/file/delete/<%=val.id%>/<%=val.type%>" > <button type="submit" > <span class="mdi mdi-delete">
@@ -40,7 +40,7 @@
               <hr />
               <span class="mdi mdi-share share-option" style="width: 100%;"> Share</span>
                 <div class="share-container" >
-                  <span class="share-folder"><span class="mdi mdi-account-plus"></span> With user</span>
+                  <span class="share-button" id="share-button"><span class="mdi mdi-account-plus"></span> With user</span>
                   <span class="copy-file-link"><span><span class="mdi mdi-link"></span> Copy link</span>
                 </div>
               <span class="mdi mdi-download"> Download</span>

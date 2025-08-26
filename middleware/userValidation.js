@@ -14,7 +14,6 @@ exports.validateSignupForm = [
     .withMessage("User name should be between 5 to 100 characters")
     .custom(async (value) => {
       const user = await prismaService.findUserByUserName(value);
-
       if (user) throw new Error("User name already exists");
       return true;
     }),
@@ -29,7 +28,7 @@ exports.validateSignupForm = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.send({ errors: errors.array() });
+      res.send({ errors: errors.array(), errorContainer: "error-container" });
       return;
     }
 
@@ -41,7 +40,10 @@ exports.validateLoginForm = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.send({ errors: errors.array() });
+      res.send({
+        errors: errors.array(),
+        errorContainer: "error-login-container",
+      });
       return;
     }
     next();
@@ -55,7 +57,42 @@ exports.validateFolderForm = [
     .withMessage("Folder name should be between 1 and 255 characters "),
   (req, res, next) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.send({ errors: errors.array() });
+    if (!errors.isEmpty())
+      return res.send({
+        errors: errors.array(),
+        errorContainer: "error-folder-container",
+      });
+    next();
+  },
+];
+exports.validateShareForm = [
+  body("user_name")
+    .optional({ checkFalsy: true, nullable: true })
+    .custom(async (value, { req }) => {
+      if (value === req.user.user_name)
+        throw new Error("Can't share with yourself");
+      const user = await prismaService.findUserByUserName(value);
+      if (!user) throw new Error("User name not found");
+      const sharedUser = await prismaService.findSharedUserByUserName(
+        value,
+        req.body.file_id
+      );
+      console.log(sharedUser);
+      if (sharedUser > 0) throw new Error("Already shared with the user");
+      return true;
+    }),
+  body("duration")
+    .notEmpty()
+    .withMessage("Duration should not be empty")
+    .isNumeric()
+    .withMessage("Duration should be number only"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.send({
+        errors: errors.array(),
+        errorContainer: "error-share-container",
+      });
     next();
   },
 ];

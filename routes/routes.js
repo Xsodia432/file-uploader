@@ -47,4 +47,10 @@ router.post(
   userController.updateFile
 );
 router.post("/file/delete/:id/:filetype", userController.deleteFile);
+router.post(
+  "/file/share",
+  userValidation.validateShareForm,
+  userController.fileShare
+);
+router.get("/share", userController.getShare);
 module.exports = router;
