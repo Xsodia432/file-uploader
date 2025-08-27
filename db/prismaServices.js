@@ -66,22 +66,29 @@ exports.findFilesByUserId = async (userId) => {
 };
 exports.createFile = async (
   userId,
-  fileName,
   originalName,
+  fileName,
   fileSize,
-  folderId
+  folderId,
+  url,
+  file_type
 ) => {
-  console.log(userId, fileName, originalName, fileSize, folderId);
-  await prisma.files.create({
-    data: {
-      user_id: userId,
-      name: originalName,
-      file_name: fileName,
-      file_size: fileSize,
-      folder_id: folderId,
-      type: "file",
-    },
-  });
+  try {
+    await prisma.files.create({
+      data: {
+        user_id: userId,
+        name: originalName,
+        file_name: fileName,
+        file_size: fileSize,
+        folder_id: folderId,
+        url: url,
+        type: "file",
+        file_type: file_type,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 exports.findFilesByFolderId = async (folderId) => {
   const files = await prisma.files.findMany({

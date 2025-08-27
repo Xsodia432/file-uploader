@@ -30,6 +30,7 @@ model Files{
   type String
   folder_id String?
   url String?
+  file_type String?
   user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
   user_id String
   file_share FileShare[]

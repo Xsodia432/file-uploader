@@ -2,10 +2,19 @@ const passport = require("passport");
 const prismaService = require("../db/prismaServices");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
-const fs = require("fs");
-const path = require("path");
+
 const multer = require("multer");
 const { format, addDays } = require("date-fns");
+const { url } = require("inspector");
+const cloudinary = require("cloudinary").v2;
+const { Readable } = require("stream");
+
+require("dotenv/config");
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 passport.use(
   new LocalStrategy(
     { usernameField: "user_name", passwordField: "password" },
@@ -75,30 +84,38 @@ exports.createFolder = async (req, res) => {
   res.send({ msg: "Success", errorContainer: "error-folder-container" });
 };
 
-const storage = multer.diskStorage({
-  destination: (req, res, cb) => {
-    cb(null, path.join(__dirname, "..", "userStorage"));
-  },
-  filename: async (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-exports.upload = multer({ storage }).single("file");
+exports.upload = multer({ storage: multer.memoryStorage() }).single("file");
 
 exports.uploadFile = async (req, res, next) => {
-  if (!req.file) return res.routes("/");
-  await prismaService.createFile(
-    req.user.id,
-    req.file.filename,
-    req.file.originalname,
-    req.file.size,
-    req.params.folderId ? req.params.folderId : null
-  );
-  const folder = await prismaService.findFileById(req.params.folderId);
-  res.redirect(
-    req.params.folderId ? `/folder/${req.params.folderId}/${folder.name}` : "/"
-  );
+  try {
+    if (!req.file) return res.routes("/");
+
+    const fileBase64 = `data:${
+      req.file.mimetype
+    };base64,${req.file.buffer.toString("base64")}`;
+    const result = await cloudinary.uploader.upload(fileBase64, {
+      resource_type: "raw",
+      type: "upload",
+    });
+
+    //insert to DB
+    await prismaService.createFile(
+      req.user.id,
+      req.file.originalname,
+      result.display_name,
+      req.file.size,
+      req.params.folderId ? req.params.folderId : null,
+      result.secure_url,
+      req.file.mimetype
+    );
+    res.redirect(
+      req.params.folderId
+        ? `/folder/${req.params.folderId}/${folder.name}`
+        : "/"
+    );
+  } catch (err) {
+    throw new Error("Something's wrong");
+  }
 };
 exports.getFolder = async (req, res) => {
   const { id, name } = req.params;
@@ -125,13 +142,17 @@ exports.getFile = async (req, res) => {
   });
 };
 exports.downloadFile = async (req, res) => {
-  const { id } = req.params;
-  const file = await prismaService.findFileById(id);
+  try {
+    const { id } = req.params;
+    const file = await prismaService.findFileById(id);
+    const response = await fetch(file.url);
+    res.setHeader("Content-disposition", `attachment; filename=${file.name}`);
+    res.setHeader("Content-Type", file.file_type);
 
-  const filePath = path.join(__dirname, "..", "userStorage", file.file_name);
-  res.download(filePath, file.name, (err) => {
-    if (err) res.status(500).send("File not found");
-  });
+    Readable.fromWeb(response.body).pipe(res);
+  } catch (err) {
+    console.log(err);
+  }
 };
 exports.updateFile = async (req, res) => {
   const { file_name, file_id, file_type } = req.body;
@@ -157,9 +178,11 @@ exports.fileShare = async (req, res) => {
 };
 exports.getShare = async (req, res) => {
   const shareFiles = await prismaService.getShareFiles(req.user.id);
+
   res.render("sharePage", {
     sharefiles: shareFiles,
     title: "Share",
     folderId: null,
+    format: format,
   });
 };
