@@ -1,50 +1,45 @@
 <%-include("header")%>
-<script src="/script/fileContent.js" defer></script>
+
 <div class="main-container">
-  <%-include("modal")%> <%-include("sidebar")%>
+  
   <main>
-    <%-include("nav")%>
+   
     <div class="main-content">
-      <h2><%=title%></h2>
+      <h2>Folder / <%=folderName%></h2>
       <table>
         <thead class="table-head">
           <th style="width: 60%">Name</th>
+          <th>Type</th>
           <th>Size</th>
           <th>Owner</th>
-          <th>Expires At</th>
+          <th>Upload date</th>
           <th></th>
         </thead>
 
-        <%if(sharefiles && sharefiles.length !== 0) {%>
-        <%sharefiles.forEach(function(val) {%>
+        <%if(shareFiles && shareFiles.length !== 0) {%>
+        <%shareFiles.forEach(function(val) {%>
         <tr class="table-body">
           <td style="padding: 5px">
             <a
-              href="<%=val['file'].type === 'folder' ? `/folder/${val['file'].id}/${val['file'].name}` : `/file/i/${val['file'].id}`%>"
-               data-file-id="<%=val.id%>"
-              data-file-type="<%=val.type%>"
+              href="<%=val.type === 'folder' ? `/folder/${val.id}/${val.name}` : `/file/i/${val.id}`%>"
+               
               class="file-name" target="_blank"
               ><span
-                class="mdi <%=val['file'].type === "folder" ? 'mdi-folder' : 'mdi-file'%>"
+                class="mdi <%=val.type === "folder" ? 'mdi-folder' : 'mdi-file'%>"
                 style="color: rgb(109, 109, 108); font-size: 1.5rem"
-              ></span><%=val["file"].name%></a
+              ></span><%=val.name%></a
             >
           </td>
-
-          <td><%=val["file"].file_size ? val["file"].file_size : "..."%></td>
-         
-          <td><%=format(val.expires_at,"MMMM dd, yyyy")%></td>
-          <td class="table-options" id="table-options"> <span class="mdi mdi-dots-horizontal-circle-outline options"></span><div class="drop-down-options">
-              
-              <form method="POST" action="/file/delete/<%=val.id%>/<%=val.type%>" > <button type="submit" > <span class="mdi mdi-delete">
-              </span> Remove Share</button></form>
-             
-              
-              
-              <%if(val['file'].type === 'file'){%> <span class="mdi mdi-download"> Download</span><%}%>
-            </div></td>
+          <td><%=val.file_type%></td>
+          <td><%=val.file_size ? val.file_size : "..."%></td>
+         <td><%=owner%></td>
+          <td><%=format(val.createdAt,"MMMM dd, yyyy")%></td>
+          <td class="table-options" id="table-options"> 
+             <form action="/file/d/<%=val.id%>" method="POST" ><button type="submit" class="download-default"><span class="mdi mdi-download"></span> Download</button></form>
+          </td>
         </tr>
         <%})%> <%}%>
+       
       </table>
     </div>
   </main>

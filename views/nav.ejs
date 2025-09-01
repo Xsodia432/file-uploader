@@ -1,4 +1,16 @@
 <nav>
   <div></div>
-  <button class="profile">P</button>
+  <div class="profile-container" id="profile-container">
+    <button class="profile" id="profile"><%=initial%></button>
+    <div class="profile-content" id="profile-content">
+      <div class="user-info">
+        <h1>Hi,</h1>
+        <span style="font-size: 1.5rem"><%=user%></span>
+      </div>
+
+      <form action="/logout" method="POST">
+        <button><span class="mdi mdi-logout"></span> Log out</button>
+      </form>
+    </div>
+  </div>
 </nav>

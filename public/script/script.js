@@ -87,3 +87,8 @@ function formSubmit(url, element) {
     }
   });
 }
+if (document.getElementById("profile")) {
+  document.getElementById("profile").addEventListener("click", (ev) => {
+    document.getElementById("profile-content").classList.toggle("visible");
+  });
+}

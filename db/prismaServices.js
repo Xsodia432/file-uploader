@@ -58,6 +58,15 @@ exports.findFilesByUserId = async (userId) => {
         orderBy: {
           type: "desc",
         },
+        include: {
+          file_share: {
+            where: {
+              expires_at: {
+                gt: new Date(),
+              },
+            },
+          },
+        },
       },
     },
   });
@@ -94,12 +103,14 @@ exports.findFilesByFolderId = async (folderId) => {
   const files = await prisma.files.findMany({
     where: {
       folder_id: folderId,
+
+      type: "file",
     },
   });
   return files;
 };
 exports.findFolderById = async (folderId) => {
-  const folder = await prisma.folders.findFirst({
+  const folder = await prisma.files.findFirst({
     where: {
       id: folderId,
     },
@@ -144,19 +155,18 @@ exports.deleteFile = async (id) => {
 
   return;
 };
-exports.fileShare = async (file_id, user_id, duration) => {
+exports.fileShare = async (file_id, duration) => {
   await prisma.fileShare.create({
     data: {
       file_id: file_id,
-      user_id: user_id,
       expires_at: duration,
     },
   });
 };
-exports.getShareFiles = async (userId) => {
-  return prisma.fileShare.findMany({
+exports.getShareFiles = async (id) => {
+  return prisma.fileShare.findFirst({
     where: {
-      user_id: userId,
+      id: id,
       expires_at: {
         gt: new Date(),
       },
@@ -181,6 +191,14 @@ exports.findSharedUserByUserName = async (userName, fileId) => {
         user_name: userName,
       },
       file_id: fileId,
+    },
+  });
+};
+exports.findFolderByUserIDAndFolderID = async (fileId, userId) => {
+  return await prisma.files.findFirst({
+    where: {
+      user_id: userId,
+      id: fileId,
     },
   });
 };

@@ -3,23 +3,26 @@
   <%-include("modal")%> <%-include("sidebar")%>
   <main>
     <%-include("nav")%>
-    <div class="main-content">
+    <div class="main-content" id="main-content">
       <h2>Contents</h2>
       <table>
         <thead class="table-head">
           <th style="width: 60%">Name</th>
+          <th>Type</th>
           <th>Size</th>
+          <th>Created At</th>
           <th></th>
         </thead>
 
         <%if(files) {%> <%files.forEach(function(val,index) {%>
-        <tr class="table-body">
+        <tr class="table-body" id="table-body">
           <td style="padding: 5px">
             <a
               href="<%=val.type === "folder" ? `/folder/${val.id}/${val.name}` : `/file/i/${val.id}`%>"
               data-file-id="<%=val.id%>"
               data-file-type="<%=val.type%>"
               class="file-name"
+              target="<%=val.type === "folder" ? '_self' : '_blank'%>"
             >
               <span
                 class="mdi <%=val.type === "folder" ? 'mdi-folder' : 'mdi-file'%>"
@@ -28,22 +31,34 @@
               ><%=val.name%></a
             >
           </td>
-
+          <td><%=val.file_type ? val.type : "Folder"%></td>
           <td><%=val.file_size ? val.file_size : "..."%></td>
+           <td><%=dateFormat(val.createdAt,"MMMM dd, yyyy")%></td>
           <td class="table-options" id="table-options">
             <span class="mdi mdi-dots-horizontal-circle-outline options"></span>
             <div class="drop-down-options">
               <span class="mdi mdi-rename rename"> Rename</span>
-              <form method="POST" action="/file/delete/<%=val.id%>/<%=val.type%>" > <button type="submit" > <span class="mdi mdi-delete">
+              <form method="POST" action="/file/delete/<%=val.id%>/<%=val.type%>" ><button type="submit" ><span class="mdi mdi-delete">
               </span> Delete</button></form>
              
               <hr />
               <span class="mdi mdi-share share-option" style="width: 100%;"> Share</span>
+              
                 <div class="share-container" >
-                  <span class="share-button" id="share-button"><span class="mdi mdi-account-plus"></span> With user</span>
-                  <span class="copy-file-link"><span><span class="mdi mdi-link"></span> Copy link</span>
+                  <%if(val.type === "folder"){%>
+                    <%if(val.file_share.length > 0){%>
+                      <span class="copy-file-link" onclick="copyHandlerFolder('<%=val.file_share[0].id%>')"><span><span class="mdi mdi-link"></span> Copy link</span>
+                    <%}%>
+                    <%if(val.file_share.length < 0){%>  <span class="share-button" id="share-button"><span class="mdi mdi-account-plus"></span> With link</span> <%}%>
+                  
+                    <%}%>
+                  <%if(val.type === "file"){%><span class="copy-file-link" onclick="copyHandler('<%=val.id%>')"><span><span class="mdi mdi-link"></span> Copy link</span><%}%>
                 </div>
-              <span class="mdi mdi-download"> Download</span>
+               
+                <%if(val.type === "file"){%>
+                    <form action="/file/d/<%=val.id%>" method="POST" ><button type="submit"><span class="mdi mdi-download"></span> Download</button></form>
+                  <%}%>
+              
             </div>
           </td>
         </tr>

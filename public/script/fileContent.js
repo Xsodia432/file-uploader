@@ -23,22 +23,13 @@ document.querySelectorAll(".share-option").forEach((ev, index) => {
       });
     });
 
-  document.addEventListener("click", (ev) => {
-    ev.stopPropagation();
-    if (
-      ev.target.querySelector(".drop-down-options") ===
-      document.querySelector(".drop-down-options")
-    ) {
-      if (document.querySelector(".visible"))
-        document.querySelector(".visible").classList.remove("visible");
-    }
-  });
-
-  document
-    .querySelectorAll(".share-button")
-    [index].addEventListener("click", (ev) => {
-      modalHandler("modal-share", "form-share", index);
-    });
+  if (document.querySelectorAll(".share-button")[index]) {
+    document
+      .querySelectorAll(".share-button")
+      [index].addEventListener("click", (ev) => {
+        modalHandler("modal-share", "form-share", index);
+      });
+  }
 });
 
 document.querySelectorAll(".rename").forEach((ev, index) => {
@@ -78,3 +69,33 @@ document
 document.getElementById("modal-close-share").addEventListener("click", (ev) => {
   modalHandlerClose("modal-share");
 });
+document.addEventListener("click", (ev) => {
+  if (document.getElementById("profile")) {
+    if (!document.getElementById("profile-container").contains(ev.target)) {
+      document.getElementById("profile-content").classList.remove("visible");
+    }
+  }
+
+  if (document.getElementById("main-content")) {
+    document.querySelectorAll(".table-options").forEach((val, index) => {
+      if (!val.contains(ev.target)) {
+        document
+          .querySelectorAll(".drop-down-options")
+          [index].classList.remove("visible");
+      }
+    });
+  }
+});
+function submitHandler(ev) {
+  return ev.preventDefault();
+}
+function copyHandler(id) {
+  navigator.clipboard.writeText(
+    window.location.hostname + ":" + window.location.port + `/file/i/${id}`
+  );
+  alert("URL copied");
+}
+function copyHandlerFolder(id) {
+  navigator.clipboard.writeText(window.location.href + `share/${id}`);
+  alert("URL copied");
+}

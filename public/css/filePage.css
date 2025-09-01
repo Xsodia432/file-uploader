@@ -105,3 +105,11 @@
 .share-container-visible {
   display: flex;
 }
+.download-default {
+  all: unset;
+  width: 100%;
+  cursor: pointer;
+  padding: 5px 5px;
+  font-size: 1rem;
+  color: rgb(68, 68, 68);
+}

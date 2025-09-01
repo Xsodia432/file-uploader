@@ -1,25 +1,31 @@
-
-<%-include("header")%>
 <script src="/script/fileContent.js" defer></script>
-<div class="main-container">
+<%-include("header")%>
+  
+<div class="main-container" id="main-container">
   <%-include("modal")%> <%-include("sidebar")%>
-  <main>
+<main>
     <%-include("nav")%>
-    <div class="main-content">
+    <div class="main-content" id="main-content">
       <h2><%=title%></h2>
       <table>
         <thead class="table-head">
           <th style="width: 60%">Name</th>
+          <th>Type</th>
           <th>Size</th>
           <th></th>
         </thead>
 
         <%if(files && files.length !== 0) {%> <%files.forEach(function(val) {%>
-        <tr class="table-body">
+        <tr class="table-body" id="table-body">
           <td style="padding: 5px">
-            <a href="/file/i/<%=val.id%>" target="_blank"><%=val.name%></a>
+            <a href="/file/i/<%=val.id%>" target="_blank"  data-file-id="<%=val.id%>"
+              data-file-type="<%=val.type%>"
+              class="file-name"> <span
+                class="mdi mdi-file"
+                style="color: rgb(109, 109, 108); font-size: 1.5rem"
+              ></span><%=val.name%></a>
           </td>
-
+          <td><%=val.file_type%></td>
           <td><%=val.file_size ? val.file_size : "..."%></td>
           <td class="table-options" id="table-options">
             <span class="mdi mdi-dots-horizontal-circle-outline options"></span>
@@ -31,10 +37,10 @@
               <hr />
               <span class="mdi mdi-share share-option" style="width: 100%;"> Share</span>
                 <div class="share-container" >
-                  <span class="share-button" id="share-button"><span class="mdi mdi-account-plus"></span> With user</span>
-                  <span class="copy-file-link"><span><span class="mdi mdi-link"></span> Copy link</span>
+                
+                  <span class="copy-file-link" onclick="copyHandler('<%=val.id%>')"><span><span class="mdi mdi-link"></span> Copy link</span>
                 </div>
-              <span class="mdi mdi-download"> Download</span>
+              <%if(val.type === "file"){%><form action="/file/d/<%=val.id%>" method="POST" ><button type="submit"><span class="mdi mdi-download"></span> Download</button></form><%}%>
             </div>
           </td>
         </tr>

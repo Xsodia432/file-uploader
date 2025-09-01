@@ -19,7 +19,7 @@ model Users{
   user_name String @unique
   password String
   file Files[]
-  file_share FileShare[]
+ 
 }
 model Files{
   id String @id @default(uuid())
@@ -46,7 +46,5 @@ model FileShare{
   id String @id @default(uuid())
   file Files @relation(fields: [file_id],references: [id],onDelete: Cascade)
   file_id String
-  user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
-  user_id String
   expires_at DateTime?
 }

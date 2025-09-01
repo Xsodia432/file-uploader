@@ -31,7 +31,6 @@ exports.validateSignupForm = [
       res.send({ errors: errors.array(), errorContainer: "error-container" });
       return;
     }
-
     next();
   },
 ];
@@ -42,7 +41,7 @@ exports.validateLoginForm = [
     if (!errors.isEmpty()) {
       res.send({
         errors: errors.array(),
-        errorContainer: "error-login-container",
+        errorContainer: "error-container",
       });
       return;
     }
@@ -96,3 +95,16 @@ exports.validateShareForm = [
     next();
   },
 ];
+exports.checkLogin = async (req, res, next) => {
+  if (req.isAuthenticated()) return next();
+  else res.redirect("/");
+};
+exports.checkIfOwner = async (req, res, next) => {
+  const folder = await prismaService.findFolderByUserIDAndFolderID(
+    req.params.id,
+    req.user.id
+  );
+
+  if (folder) return next();
+  else res.redirect("/");
+};

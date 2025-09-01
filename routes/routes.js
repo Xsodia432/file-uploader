@@ -22,6 +22,7 @@ router.post(
 );
 router.post(
   "/upload/folders",
+  userValidation.checkLogin,
   userValidation.validateFolderForm,
   userController.createFolder
 );
@@ -34,23 +35,39 @@ router.post("/logout", (req, res) => {
 });
 router.post(
   "/upload/files{/:folderId}",
+  userValidation.checkLogin,
   userController.upload,
   userController.uploadFile
 );
 router.get("/delete", userController.deleteUsers);
-router.get("/folder/:id/:name", userController.getFolder);
+router.get(
+  "/folder/:id/:name",
+  userValidation.checkLogin,
+  userValidation.checkIfOwner,
+  userController.getFolder
+);
 router.get("/file/i/:id", userController.getFile);
-router.post("/file/d/:id", userController.downloadFile);
+router.post(
+  "/file/d/:id",
+
+  userController.downloadFile
+);
 router.post(
   "/update/file",
+  userValidation.checkLogin,
   userValidation.validateFolderForm,
   userController.updateFile
 );
-router.post("/file/delete/:id/:filetype", userController.deleteFile);
+router.post(
+  "/file/delete/:id/:filetype",
+  userValidation.checkLogin,
+  userController.deleteFile
+);
 router.post(
   "/file/share",
+  userValidation.checkLogin,
   userValidation.validateShareForm,
   userController.fileShare
 );
-router.get("/share", userController.getShare);
+router.get("/share/:id", userController.getShare);
 module.exports = router;
