@@ -29,11 +29,7 @@ exports.findUserByUserId = async (id) => {
   });
   return user;
 };
-exports.deleteUsers = async () => {
-  await prisma.files.deleteMany();
-  await prisma.folders.deleteMany();
-  // await prisma.users.deleteMany();
-};
+
 exports.createFolder = async (userId, folderName) => {
   const folder = await prisma.files.create({
     data: {

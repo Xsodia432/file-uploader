@@ -12,6 +12,7 @@
           <th style="width: 60%">Name</th>
           <th>Type</th>
           <th>Size</th>
+          <th>Upload date</th>
           <th></th>
         </thead>
 
@@ -26,19 +27,19 @@
               ></span><%=val.name%></a>
           </td>
           <td><%=val.file_type%></td>
-          <td><%=val.file_size ? val.file_size : "..."%></td>
+          <td><%=val.file_size ? fileSizeFormat(parseInt(val.file_size)) : "..."%></td>
+          <td><%=format(val.createdAt,"MMMM dd, yyyy")%></td>
           <td class="table-options" id="table-options">
             <span class="mdi mdi-dots-horizontal-circle-outline options"></span>
             <div class="drop-down-options">
               <span class="mdi mdi-rename rename"> Rename</span>
-              <form method="POST" action="/file/delete/<%=val.id%>/<%=val.type%>" > <button type="submit" > <span class="mdi mdi-delete">
+              <form method="POST" action="/file/delete/<%=val.id%>/<%=val.type%>" onsubmit="return confirmation()"> <button type="submit" > <span class="mdi mdi-delete">
               </span> Delete</button></form>
              
               <hr />
               <span class="mdi mdi-share share-option" style="width: 100%;"> Share</span>
-                <div class="share-container" >
-                
-                  <span class="copy-file-link" onclick="copyHandler('<%=val.id%>')"><span><span class="mdi mdi-link"></span> Copy link</span>
+                <div class="share-container " >
+                  <span class="share-button copy-file-link folder-with-duration" onclick="copyHandler('<%=val.id%>')"><span><span class="mdi mdi-link"></span> Copy link</span>
                 </div>
               <%if(val.type === "file"){%><form action="/file/d/<%=val.id%>" method="POST" ><button type="submit"><span class="mdi mdi-download"></span> Download</button></form><%}%>
             </div>

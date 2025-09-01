@@ -39,7 +39,7 @@ router.post(
   userController.upload,
   userController.uploadFile
 );
-router.get("/delete", userController.deleteUsers);
+
 router.get(
   "/folder/:id/:name",
   userValidation.checkLogin,

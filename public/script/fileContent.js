@@ -23,7 +23,11 @@ document.querySelectorAll(".share-option").forEach((ev, index) => {
       });
     });
 
-  if (document.querySelectorAll(".share-button")[index]) {
+  if (
+    !document
+      .querySelectorAll(".share-button")
+      [index].classList.contains("folder-with-duration")
+  ) {
     document
       .querySelectorAll(".share-button")
       [index].addEventListener("click", (ev) => {
@@ -98,4 +102,7 @@ function copyHandler(id) {
 function copyHandlerFolder(id) {
   navigator.clipboard.writeText(window.location.href + `share/${id}`);
   alert("URL copied");
+}
+function confirmation() {
+  return confirm("Are you sure? This will permanently delete.");
 }

@@ -8,6 +8,7 @@ const { format, addDays } = require("date-fns");
 const { url } = require("inspector");
 const cloudinary = require("cloudinary").v2;
 const { Readable } = require("stream");
+const { fi } = require("date-fns/locale");
 
 require("dotenv/config");
 cloudinary.config({
@@ -15,6 +16,13 @@ cloudinary.config({
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
+function fileSizeFormat(fileSize, n = 0) {
+  const unitSystem = ["bytes", "KB", "MB", "GB"];
+  if (fileSize > 1024) {
+    return fileSizeFormat(fileSize / 1024, n + 1);
+  }
+  return `${Math.round(fileSize * 100) / 100} ${unitSystem[n]}`;
+}
 passport.use(
   new LocalStrategy(
     { usernameField: "user_name", passwordField: "password" },
@@ -23,8 +31,8 @@ passport.use(
         const user = await prismaService.findUserByUserName(user_name);
 
         if (!user) return done(null, false, { msg: "Username not found" });
-        if (user.password !== password)
-          return done(null, false, { msg: "Password incorrect" });
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) return done(null, false, { msg: "Password incorrect" });
         done(null, user);
       } catch (err) {
         done(err);
@@ -45,28 +53,32 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 exports.index = async (req, res) => {
-  const files = req.user
-    ? await prismaService.findFilesByUserId(req.user.id)
-    : null;
-  const user = req.user ? req.user.user_name : null;
-  const initial = req.user ? req.user.user_name[0].toUpperCase() : null;
+  try {
+    const files = req.user
+      ? await prismaService.findFilesByUserId(req.user.id)
+      : null;
+    const user = req.user ? req.user.user_name : null;
+    const initial = req.user ? req.user.user_name[0].toUpperCase() : null;
 
-  res.render("index", {
-    files: files,
-    title: "Vault | Tage",
-    folderId: null,
-    dateFormat: format,
-    user: user,
-    initial: initial,
-  });
+    res.render("index", {
+      files: files,
+      title: "Vault | Tage",
+      folderId: null,
+      dateFormat: format,
+      fileSizeFormat: fileSizeFormat,
+      user: user,
+      initial: initial,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 exports.createAccount = async (req, res, next) => {
-  await prismaService.createUser(req.body.user_name, req.body.password);
+  const hash = await bcrypt.hash(req.body.password, 10);
+  await prismaService.createUser(req.body.user_name, hash);
   next();
 };
-exports.deleteUsers = async (req, res) => {
-  await prismaService.deleteUsers();
-};
+
 exports.authenticateUser = (req, res) => {
   passport.authenticate("local", (error, user, info) => {
     if (!user)
@@ -107,7 +119,6 @@ exports.uploadFile = async (req, res, next) => {
       type: "upload",
     });
 
-    //insert to DB
     await prismaService.createFile(
       req.user.id,
       req.file.originalname,
@@ -129,6 +140,7 @@ exports.uploadFile = async (req, res, next) => {
     console.log(err);
   }
 };
+
 exports.getFolder = async (req, res) => {
   const { id, name } = req.params;
   const user = req.user ? req.user.user_name : null;
@@ -141,20 +153,24 @@ exports.getFolder = async (req, res) => {
     folderId: id,
     user: user,
     initial: initial,
+    format: format,
+    fileSizeFormat: fileSizeFormat,
   });
 };
 exports.getFile = async (req, res) => {
   const { id } = req.params;
   const file = await prismaService.findFileById(id);
-
-  res.render("filePage", {
-    title: file.name,
-    fileSize: file.file_size,
-    uploadDate: format(file.createdAt, "MMMM dd, yyyy"),
-    fileType: file.file_type,
-    uploader: file.user.user_name,
-    fileId: file.id,
-  });
+  if (file) {
+    return res.render("filePage", {
+      title: file.name,
+      fileSize: file.file_size,
+      uploadDate: format(file.createdAt, "MMMM dd, yyyy"),
+      fileType: file.file_type,
+      uploader: file.user.user_name,
+      fileId: file.id,
+      fileSizeFormat: fileSizeFormat,
+    });
+  } else return res.render("404", { title: "Not found", type: "File" });
 };
 exports.downloadFile = async (req, res) => {
   try {
@@ -205,7 +221,7 @@ exports.fileShare = async (req, res) => {
 exports.getShare = async (req, res) => {
   const share = await prismaService.getShareFiles(req.params.id);
 
-  if (share && share.length > 0) {
+  if (share) {
     const shareFiles = await prismaService.findFilesByFolderId(share.file_id);
     const initial = req.user.user_name[0].toUpperCase();
 
@@ -217,6 +233,7 @@ exports.getShare = async (req, res) => {
       folderId: null,
       format: format,
       initial: initial,
+      fileSizeFormat: fileSizeFormat,
     });
-  } else return res.render("404", { title: "Not Found" });
+  } else return res.render("404", { title: "Not Found", type: "Folder" });
 };

@@ -31,7 +31,7 @@
             >
           </td>
           <td><%=val.file_type%></td>
-          <td><%=val.file_size ? val.file_size : "..."%></td>
+          <td><%=val.file_size ? fileSizeFormat(parseInt(val.file_size)) : "..."%></td>
          <td><%=owner%></td>
           <td><%=format(val.createdAt,"MMMM dd, yyyy")%></td>
           <td class="table-options" id="table-options"> 
